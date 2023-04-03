@@ -38,8 +38,8 @@ while read -r _hook; do
     done <<< $_hook
 done < "./build/hooks"
 if $repo_updated; then
-    #rm -fr "./bin/"
-    #mkdir "./bin"
+    rm -fr "./bin/"
+    mkdir "./bin"
     cat "./build/.wlock" > "./build/hooks"
     cd ./x86_64
     echo "Updating repository database!"
