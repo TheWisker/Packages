@@ -1,0 +1,197 @@
+# Maintainer: TheWisker <heftig@archlinux.org>
+
+pkgbase=linux-stellarch # <JOY>
+pkgver=6.17.2.arch1
+pkgrel=1
+pkgdesc='Stellarch Linux'
+arch=(x86_64)
+license=(GPL-2.0-only)
+url='https://github.com/archlinux/linux'
+_srcname=linux-${pkgver%.*}
+_srctag=v${pkgver%.*}-${pkgver##*.}
+_bore_commit=807683c6cef75ca85a865ceedee9c5c866f3fc75 # Oct 3, 2025
+makedepends=( bc cpio gettext libelf pahole perl python tar xz clang llvm lld )
+options=( !debug !strip )
+
+source=(
+    https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign} # Kernel sources
+    00_archlinux.patch.zst::${url}/releases/download/${_srctag}/linux-${_srctag}.patch.zst  # Arch Linux patches
+    00_archlinux.patch.zst.sig::${url}/releases/download/${_srctag}/linux-${_srctag}.patch.zst.sig  # Arch Linux patches signature
+    bore-scheduler::git+https://github.com/firelzrd/bore-scheduler#commit=${_bore_commit} # BORE Scheduler
+	90_bore_6.17_endif_comment_extra_tokens.patch
+    kconfig  # Kernel Compilation Flags
+)
+
+validpgpkeys=(
+    ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
+    647F28654894E3BD457199BE38DBBDC86092693E  # Greg Kroah-Hartman
+    83BC8889351B5DEBBB68416EB8AC08600F108CDF  # Jan Alexander Steffens (heftig)
+)
+
+# https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
+sha256sums=('fdebcb065065f5c1b8dc68a6fb59cda50cdddbf9103d207c2196d55ea764f57f'
+            'SKIP'
+            '33a66e49fc3d2e0aec77175d61fc2f7f96ed2ec562a81018fb251922b4d55fc2'
+            'SKIP'
+            '25ed582887b019aa5d170797d8ccf91c00a58d6f57c870801169a80d228eecc6'
+            'ab32f6558ea2f875e78c13fddee266ab6bfa90d89a43d2411585e8e22197cda7'
+            '9d5f8084af747225c759c1d732f96b15d7d588ab9a06e15600a3d3bada422cef')
+sha512sums=('3ba4bd85c1a55e074677a154527b488a0d11b6c6947a761cde3000a21b74a07f7d9cc013884633c07475ff09073efd9d3494a7a45b664724f4c363448d6e256a'
+            'SKIP'
+            'ed9de0ad65161ff7a6272e033509498b190428340308fca73b06c753499b935119fcfbd56bdfac238e626091bcab9fa1bb8320025065ba1219fb2157d83294cb'
+            'SKIP'
+            '53cba67b0119fb70c6dfcb03e700aefbcc7e55edf862f335c52382321b0457f640f319f2be8f12b13bdcb1d6763efe058da6acd889ea5f9e0c3617c8dcd77d3d'
+            'fd720e77ec9c3a5316b27623dcfcb7347916b45ca1549de7914b5f12c56cbee0e513cb4aca3ff315291d779f3d7ade147c981cda7806ea29602f6f2171234b56'
+            'ad67b1cdf0548640ed3aff9d01dec94e9da64fd53395a1f56ee80040df6bf600c3688e01cf8c2f6b819910c3da64a510e16f74ad66f979317a398beb2de65aab')
+
+export KBUILD_BUILD_HOST=stellarch
+export KBUILD_BUILD_USER=$pkgbase
+export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
+
+prepare() {
+	cd "$_srcname"
+
+	echo -e "\033[1mSetting version...\033[0m"
+	echo "-$pkgrel" > localversion.10-pkgrel
+	echo "${pkgbase#linux}" > localversion.20-pkgname
+
+    cp "../bore-scheduler/patches/stable/linux-${pkgver%.*.*}-bore/"*.patch ../50_bore_scheduler.patch
+
+    local src
+    for src in ../*.patch; do
+        src="${src##*/}"
+        echo -e "\033[1mApplying patch '${src}'...\033[0m"
+        patch -Np1 < "../${src}"
+    done
+
+    echo -e "\033[1mSetting config...\033[0m"
+    cp ../kconfig .config
+    make CC=clang LLVM=1 LLVM_IAS=1 LD=ld.lld olddefconfig # Updates .config adding new options with default values
+    diff -u ../kconfig .config || true
+
+    make -s kernelrelease > version
+    echo -e "\033[1mPrepared '${pkgbase}' version '$(<version)'\033[0m"
+}
+
+build() {
+	cd "$_srcname"
+    make CC=clang LLVM=1 LLVM_IAS=1 LD=ld.lld all -j$(nproc)
+}
+
+_package() {
+    pkgdesc="The '${pkgdesc}' kernel and modules"
+    depends=( coreutils initramfs kmod )
+    optdepends=( 'linux-firmware: firmware images needed for some devices' )
+    provides=( NTSYNC-MODULE )
+    replaces=()
+
+    cd "$_srcname"
+    local modulesdir="${pkgdir}/usr/lib/modules/$(<version)"
+
+    echo -e "\033[1mInstalling boot image...\033[0m"
+    # systemd expects to find the kernel here to allow hibernation
+    # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
+    install -Dm644 "$(make -s image_name)" "${modulesdir}/vmlinuz"
+
+    # Used by mkinitcpio to name the kernel
+    echo "$pkgbase" | install -Dm644 /dev/stdin "${modulesdir}/pkgbase"
+
+    echo -e "\033[1mInstalling modules...\033[0m"
+    ZSTD_CLEVEL=19 make INSTALL_MOD_PATH="${pkgdir}/usr" INSTALL_MOD_STRIP=1 \
+    DEPMOD=/doesnt/exist modules_install  # Suppress depmod
+
+    # remove build link
+    rm "${modulesdir}"/build
+}
+
+_package-headers() {
+    pkgdesc="Headers and scripts for building modules for the '${pkgdesc}' kernel"
+
+    cd "$_srcname"
+    local builddir="${pkgdir}/usr/lib/modules/$(<version)/build"
+
+    echo -e "\033[1mInstalling build files...\033[0m"
+    install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map localversion.* version vmlinux
+    install -Dt "${builddir}/kernel" -m644 kernel/Makefile
+    install -Dt "${builddir}/arch/x86" -m644 arch/x86/Makefile
+    cp -t "$builddir" -a scripts
+
+    # required when STACK_VALIDATION is enabled & when using nvidia-open-dkms
+    install -Dt "$builddir/tools/objtool" tools/objtool/objtool
+
+    echo -e "\033[1mInstalling headers...\033[0m"
+    cp -t "$builddir" -a include
+    cp -t "${builddir}/arch/x86" -a arch/x86/include
+    install -Dt "${builddir}/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
+
+    install -Dt "${builddir}/drivers/md" -m644 drivers/md/*.h
+    install -Dt "${builddir}/net/mac80211" -m644 net/mac80211/*.h
+
+    # https://bugs.archlinux.org/task/13146
+    install -Dt "${builddir}/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
+
+    # https://bugs.archlinux.org/task/20402
+    install -Dt "${builddir}/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
+    install -Dt "${builddir}/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
+    install -Dt "${builddir}/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+
+    # https://bugs.archlinux.org/task/71392
+    install -Dt "${builddir}/drivers/iio/common/hid-sensors" -m644 drivers/iio/common/hid-sensors/*.h
+
+    echo -e "\033[1mInstalling KConfig files...\033[0m"
+    find . -name 'Kconfig*' -exec install -Dm644 {} "${builddir}/{}" \;
+
+    echo -e "\033[1mInstalling unstripped VDSO...\033[0m"
+    make INSTALL_MOD_PATH="${pkgdir}/usr" vdso_install \
+        link=  # Suppress build-id symlinks
+
+    echo -e "\033[1mRemoving unneeded architectures...\033[0m"
+    local arch
+    for arch in "${builddir}"/arch/*/; do
+        [[ $arch = */x86/ ]] && continue
+        echo -e "\033[1mRemoving $(basename "$arch")\033[0m"
+        rm -r "$arch"
+    done
+
+    echo -e "\033[1mRemoving documentation...\033[0m"
+    rm -r "${builddir}/Documentation"
+
+    echo -e "\033[1mRemoving broken symlinks...\033[0m"
+    find -L "$builddir" -type l -printf 'Removing %P\n' -delete
+
+    echo -e "\033[1mRemoving loose objects...\033[0m"
+    find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
+
+    echo -e "\033[1mStripping build tools...\033[0m"
+    local file
+    while read -rd '' file; do
+        case "$(file -Sib "$file")" in
+        application/x-sharedlib\;*)      # Libraries (.so)
+            strip -v $STRIP_SHARED "$file" ;;
+        application/x-archive\;*)        # Libraries (.a)
+            strip -v $STRIP_STATIC "$file" ;;
+        application/x-executable\;*)     # Binaries
+            strip -v $STRIP_BINARIES "$file" ;;
+        application/x-pie-executable\;*) # Relocatable binaries
+            strip -v $STRIP_SHARED "$file" ;;
+        esac
+    done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
+
+    echo -e "\033[1mStripping vmlinux...\033[0m"
+    strip -v $STRIP_STATIC "${builddir}/vmlinux"
+
+    echo -e "\033[1mAdding symlink...\033[0m"
+    mkdir -p "${pkgdir}/usr/src"
+    ln -sr "$builddir" "${pkgdir}/usr/src/${pkgbase}"
+}
+
+pkgname=(
+  "$pkgbase"
+  "${pkgbase}-headers"
+)
+for _p in "${pkgname[@]}"; do
+    eval "package_$_p() {
+        $(declare -f "_package${_p#$pkgbase}")
+        _package${_p#$pkgbase}
+    }"
+done

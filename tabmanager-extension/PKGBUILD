@@ -1,0 +1,51 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+
+pkgname=tabmanager-extension
+pkgver=7.1.1
+pkgrel=1
+pkgdesc="WebExtensions for restoring and saving window / tab states"
+arch=('any')
+url='https://github.com/sienori/Tab-Session-Manager'
+license=('MPL-2.0')
+depends=('firefox')
+makedepends=('git' 'npm' 'zip' 'unzip')
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("${pkgname}-${pkgver}::git+https://github.com/sienori/Tab-Session-Manager#tag=${pkgver}")
+noextract=()
+validpgpkeys=()
+sha512sums=('b0462e3e2b4ee7a49f52224449a81239d41c8108bf0683dc294b8edfd240c5f4da641a31481a467593b67b3fe6bf559192fa80835d54a8cd35f78ac0652ce47a')
+
+prepare() {
+    # Initialize project with npm
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    npm install
+    # Make dirs for later
+    mkdir -p artifacts extracted
+}
+
+build() {
+    # Build extension
+    cd "${srcdir}/${pkgname}-${pkgver}"
+	cat > src/credentials.js <<-EOF
+	export const clientId = "xxx"
+	export const clientSecret = "xxx"
+	EOF
+    npm run build
+}
+
+package() {
+    # Extract build
+    unzip "${srcdir}/${pkgname}-${pkgver}/dist/copiedSource-tab_session_manager-${pkgver}.zip" -d "${srcdir}/${pkgname}-${pkgver}/extracted"
+    # Package it correctly
+    ( cd "${srcdir}/${pkgname}-${pkgver}/extracted/src" && zip -r ../../artifacts/dist.zip . )
+    # Install extension
+    install -Dm644 "${srcdir}/${pkgname}-${pkgver}/artifacts/dist.zip" "${pkgdir}/usr/lib/firefox/browser/extensions/Tab-Session-Manager@sienori.xpi"
+}

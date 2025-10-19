@@ -1,0 +1,14 @@
+pkgbase = amy-icon-theme
+	pkgdesc = Amy dark icons for linux desktop
+	pkgver = v1.1.0
+	pkgrel = 1
+	url = https://github.com/L4ki/Amy-Plasma-Themes
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = tar
+	makedepends = findutils
+	provides = icon-theme
+	source = amy-src.tar.xz
+	sha512sums = 501491319512aee0b3410b0319f1b3277a5346e03753b9700cb01dfa47c9637e58312b39158da607d1e1e0ebb2d28b1cbcf28c69371dc2e31908e4e320efd3d5
+
+pkgname = amy-icon-theme

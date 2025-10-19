@@ -1,0 +1,32 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+pkgname=hyperfluent-grub-theme
+pkgver=v1.0.1
+pkgrel=1
+pkgdesc="Fluent, modern, and clean GRUB theme"
+arch=('any')
+url="https://github.com/Coopydood/HyperFluent-GRUB-Theme"
+license=('GPL-3.0-or-later')
+depends=('grub')
+makedepends=('git' 'findutils')
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("${pkgname}-${pkgver}::git+https://github.com/Coopydood/HyperFluent-GRUB-Theme#tag=${pkgver}")
+noextract=()
+validpgpkeys=()
+sha512sums=('45bd5c20d01a62e950435243843383de106d5d736b76e722023bb910c58cb29b6c40598b5c2307b9e5b149948e9c8c5e765368be70bda3db32515f5e1603181f')
+
+package() {
+    # Make dir and copy
+    mkdir -p "${pkgdir}/usr/share/grub/themes/fluent"
+    cp -r "${srcdir}/${pkgname}-${pkgver}/arch"/* "${pkgdir}/usr/share/grub/themes/fluent"
+    # Set correct permissions recursively
+    find "${pkgdir}/usr/share/grub/themes/fluent" -type d -exec chmod 755 {} +
+    find "${pkgdir}/usr/share/grub/themes/fluent" -type f -exec chmod 644 {} +
+}

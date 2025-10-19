@@ -1,0 +1,43 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+pkgname=python-i686-bin
+pkgver=3.11.8
+pkgrel=7
+pkgdesc="Major release 3.11 of the Python high-level programming language (32-bit)"
+arch=('x86_64')
+url="https://www.python.org/"
+license=('PSF-2.0')
+depends=('glibc' 'zlib' 'bzip2' 'openssl' 'libffi')
+checkdepends=()
+optdepends=()
+makedepends=('tar')
+provides=('python-i686')
+conflicts=()
+replaces=()
+backup=()
+options=('!debug')
+install=
+changelog=
+source=("python-32-bit.tar.gz::https://github.com/shdwmtr/pybuilder/releases/download/v1.0.6/python-3.11.8-32-bit.tar.gz")
+noextract=()
+validpgpkeys=()
+sha512sums=('74ee4d03d6f99ec0dc2246bbd018b3e8e4a7618b60701e3c7572c7290c8cc12d2959ff9c3f7b6a3369cba0b8115ad63e32aafe0b1b2f6aa2cdcf3e3b70f64e90')
+
+prepare() {
+    cd "$srcdir"
+    # Extract and move files
+    tar -xf "python-32-bit.tar.gz"
+}
+
+package() {
+    cd "$srcdir"
+
+    # Create necessary directories
+    install -dm755 "${pkgdir}/opt/python-i686-${pkgver}"
+    install -dm755 "${pkgdir}/usr/bin"
+
+    cd python-build
+    mv bin "${pkgdir}/opt/python-i686-${pkgver}/"
+    mv lib "${pkgdir}/opt/python-i686-${pkgver}/"
+    mv include "${pkgdir}/opt/python-i686-${pkgver}/"
+    mv share "${pkgdir}/opt/python-i686-${pkgver}/"
+}

@@ -1,0 +1,53 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+
+_pkgver_ext=v2.0.11
+_pkgver_app=v2.7.4
+
+pkgname=pywalfox
+pkgver=${_pkgver_ext}_${_pkgver_app}
+pkgrel=1
+pkgdesc="Dynamic theming of Firefox using Pywal colors"
+arch=('any')
+url='https://github.com/frewacom/pywalfox'
+license=('MPL-2.0')
+depends=('python' 'firefox' 'python-setuptools' 'python-importlib-metadata' 'python-pywalfox')
+makedepends=('git' 'npm' 'sed' 'python-setuptools')
+checkdepends=()
+optdepends=()
+provides=('pywalfox-extension' 'pywalfox-native' 'python-pywalfox')
+conflicts=('python-pywalfox')
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("${pkgname}-${_pkgver_ext}-ext::git+https://github.com/Frewacom/pywalfox#tag=${_pkgver_ext}" "${pkgname}-${_pkgver_app}-app::git+https://github.com/Frewacom/pywalfox-native#tag=${_pkgver_app}")
+noextract=()
+validpgpkeys=()
+sha512sums=('9df9b3e73b7369e1baaf42fb754f94139160fd6ef7d62b919c7d2859e2f0ef870f873839a091e10b8fa452d2594c6af7c8891e57847681bac8f8800fcf0c984f' 'b830fccaaa109a4f9e17d41d5b8ae012dbdfe84feb76afcf7480d08cfdda857a47bb859d19289241497caa3a4799b03ce1ca87bfd6d95eb9ab5caf9cd593f8de')
+
+prepare() {
+    # Initialize project with npm
+    cd "${srcdir}/${pkgname}-${_pkgver_ext}-ext"
+    npm install
+    # Set path to launcher script in manifest.json
+    sed -i "s:<path>:$(python -c "import site; print(site.getsitepackages()[0])")/pywalfox/bin/main.sh:" "${srcdir}/${pkgname}-${_pkgver_app}-app/pywalfox/assets/manifest.json"
+}
+
+build() {
+    # Build extension
+    cd "${srcdir}/${pkgname}-${_pkgver_ext}-ext"
+    npm run build
+    # Build native application
+    cd "${srcdir}/${pkgname}-${_pkgver_app}-app"
+    python setup.py build
+}
+
+package() {
+    # Install extension
+    install -Dm644 "${srcdir}/${pkgname}-${_pkgver_ext}-ext/artifacts/pywalfox-${_pkgver_ext/v/}.zip" "${pkgdir}/usr/lib/firefox/browser/extensions/pywalfox@frewacom.org.xpi"
+    # Install native application
+    cd "${srcdir}/${pkgname}-${_pkgver_app}-app"
+    python setup.py install --root="$pkgdir" --optimize=1 --skip-build # Install python
+    install -Dm644 pywalfox/assets/manifest.json "${pkgdir}/usr/lib/mozilla/native-messaging-hosts/pywalfox.json" # Install firefox manifest
+}

@@ -1,0 +1,57 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+pkgname=ultimmc
+pkgver=1.6
+pkgrel=1
+pkgdesc="Free, open source launcher and instance manager for Minecraft."
+arch=('x86_64')
+url="https://github.com/UltimMC/Launcher"
+license=('Apache')
+depends=('zlib' 'opengl-driver' 'qt5-base' 'qt5-x11extras' 'qt5-svg' 'xorg-xrandr' 'java-runtime')
+makedepends=('cmake' 'git' 'qt5-tools' 'zlib' 'jdk8-openjdk' 'opengl-driver')
+source=("${pkgname}-${pkgver}::git+https://github.com/UltimMC/Launcher#commit=c95dfe89e15d8ec142acdf54595d0ab7358dac5e"
+        "ultimmc.desktop"
+        "icon.svg")
+sha256sums=('f6470320b522f8656ee06d6b477accac63a94e49ec45bf7bce8590f7ff9b2f1b'
+            '2c7d2fb4b12e750cc73e9eeb6a79682a6c06fa7245383d37b3244542c896aa0c'
+            '9cbd72cbc2e5b1900021c48d0d137547532bacc6c5f07cfb418c85d3d0d3a053')
+
+prepare() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    git submodule update --init --recursive
+}
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    cmake -B build -S "${srcdir}/${pkgname}-${pkgver}" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/opt/ultimmc \
+    -DLauncher_NOTIFICATION_URL:STRING=https://files.multimc.org/notifications.json \
+    -DLauncher_UPDATER_BASE=https://files.multimc.org/update/ \
+    -DLauncher_PASTE_EE_API_KEY:STRING=utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ \
+    -DLauncher_LAYOUT=lin-nodeps -DLauncher_BUILD_PLATFORM=lin64 \
+    -DLauncher_BUG_TRACKER_URL=https://github.com/UltimMC/Launcher/issues \
+    -DLauncher_EMBED_SECRETS=On -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+    cmake --build build -j "$(nproc)"
+}
+
+check() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    ctest --test-dir build --output-on-failure
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    mkdir -p "${pkgdir}/usr/bin"
+    mkdir -p "${pkgdir}/opt/ultimmc"
+    mkdir -p "${pkgdir}/usr/share/applications"
+
+    DESTDIR="$pkgdir" cmake --install build
+
+    install -m755 -D "${srcdir}/ultimmc.desktop" "${pkgdir}/usr/share/applications/ultimmc.desktop"
+    install -m755 -D "${srcdir}/icon.svg" "${pkgdir}/opt/ultimmc/icon.svg"
+    ln -s "/opt/ultimmc/UltimMC" "${pkgdir}/usr/bin/ultimmc"
+}

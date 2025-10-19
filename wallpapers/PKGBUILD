@@ -1,0 +1,31 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+pkgname=wallpapers
+pkgver=v0.0.0
+pkgrel=1
+pkgdesc="Personal collection of wallpapers curated over time for their visual appeal, mood, and artistic value"
+arch=('any')
+url="https://github.com/TheWisker/Wallpapers"
+license=('GPL-3.0-or-later') # Why not
+depends=()
+makedepends=('git' 'findutils')
+checkdepends=()
+optdepends=()
+provides=('wallpapers')
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("${pkgname}-${pkgver}::git+https://github.com/TheWisker/Wallpapers#tag=${pkgver}")
+noextract=()
+validpgpkeys=()
+sha512sums=('64670013359e6f3577dd2289259d45d7c8b46a7a58c1a1bfe0ea37c71b5ff84397199a4fd312736f4bd3cc131b0cbb100218e348403f5e64c7059b6041563c92')
+
+package() {
+    mkdir -p "${pkgdir}/usr/share/wallpapers"
+    cp "${srcdir}/${pkgname}-${pkgver}/wallpapers/"* "${pkgdir}/usr/share/wallpapers"
+	# Ensure all wallpaper files are world-readable
+	find "${pkgdir}/usr/share/wallpapers/" -type f -exec chmod 644 {} +
+    find "${pkgdir}/usr/share/wallpapers/" -type d -exec chmod 755 {} +
+}

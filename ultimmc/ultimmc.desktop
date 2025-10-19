@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories=Game;
+Exec=/opt/ultimmc/UltimMC --dir=.local/share/ultimmc
+Icon=/opt/ultimmc/icon.svg
+Keywords=game;Minecraft;
+MimeType=
+Name=UltimMC 5
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application

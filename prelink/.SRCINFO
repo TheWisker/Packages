@@ -1,0 +1,16 @@
+pkgbase = prelink
+	pkgdesc = ELF prelinking utility to speed up dynamic linking.
+	pkgver = 20130503
+	pkgrel = 2
+	url = https://github.com/jwilk-mirrors/prelink
+	arch = x86_64
+	license = GPL-2.0-only
+	makedepends = automake
+	depends = glibc
+	depends = libelf
+	depends = elfutils
+	conflicts = execstack
+	source = prelink-20130503::git+https://github.com/jwilk-mirrors/prelink#commit=5f78e1a69ad2e67bcf4e36b60b741e37b90de46d
+	sha256sums = 06a2ec3de0f4a1cac8221c6033cd0f5e5639d21b9e861c3fadad60108c4ca811
+
+pkgname = prelink

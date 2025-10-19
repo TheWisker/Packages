@@ -1,0 +1,14 @@
+pkgbase = hyperfluent-grub-theme
+	pkgdesc = Fluent, modern, and clean GRUB theme
+	pkgver = v1.0.1
+	pkgrel = 1
+	url = https://github.com/Coopydood/HyperFluent-GRUB-Theme
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = git
+	makedepends = findutils
+	depends = grub
+	source = hyperfluent-grub-theme-v1.0.1::git+https://github.com/Coopydood/HyperFluent-GRUB-Theme#tag=v1.0.1
+	sha512sums = 45bd5c20d01a62e950435243843383de106d5d736b76e722023bb910c58cb29b6c40598b5c2307b9e5b149948e9c8c5e765368be70bda3db32515f5e1603181f
+
+pkgname = hyperfluent-grub-theme

@@ -1,0 +1,44 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+# Contributor: Pierre Chapuis <arch@catwell.info>
+
+pkgname=prelink
+pkgver=20130503
+pkgrel=2
+pkgdesc="ELF prelinking utility to speed up dynamic linking."
+depends=(glibc libelf elfutils)
+makedepends=(automake)
+arch=("x86_64")
+url="https://github.com/jwilk-mirrors/prelink"  # was: https://people.redhat.com/jakub/prelink
+license=("GPL-2.0-only")
+conflicts=(execstack)
+source=("${pkgname}-${pkgver}::git+https://github.com/jwilk-mirrors/prelink#commit=5f78e1a69ad2e67bcf4e36b60b741e37b90de46d")
+sha256sums=("06a2ec3de0f4a1cac8221c6033cd0f5e5639d21b9e861c3fadad60108c4ca811")
+
+build () {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    # fix libelf detection
+    sed -i 's/#include <string.h>/&\n#include <unistd.h>/' m4/libelf.m4
+    autoreconf -fi
+
+    ./configure --prefix=/usr \
+    --localstatedir=/var \
+    --mandir=/usr/share/man \
+    --sbindir=/usr/bin \
+    --sysconfdir=/etc
+
+    cd "${srcdir}/${pkgname}-${pkgver}/src"
+
+    make prelink
+}
+
+package () {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    mkdir -p "${pkgdir}/usr/bin"
+    mkdir -p "${pkgdir}/usr/share/man/man8"
+
+    cp src/prelink "${pkgdir}/usr/bin"
+    cp doc/prelink.8 "${pkgdir}/usr/share/man/man8"
+    gzip --best "${pkgdir}/usr/share/man/man8/prelink.8"
+}

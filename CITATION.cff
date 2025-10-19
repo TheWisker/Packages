@@ -1,0 +1,7 @@
+cff-version: 1.2.0
+message: "If you use this software in your work, or make a fork of it, please cite it using the following metadata."
+authors:
+- given-names: "TheWisker"
+title: "Stellarch Project"
+date-released: 2025-XX-XX
+url: "https://github.com/TheWisker/Stellarch"

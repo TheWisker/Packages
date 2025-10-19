@@ -1,0 +1,83 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+
+# Get dynamic data
+_pkgver="$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | jq -r .tag_name)"
+_download_url="$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | grep browser_download_url | cut -d\" -f4)"
+_src_url="$(echo "$_download_url" | grep .tar.gz)"
+_checksum_url="$(echo "$_download_url" | grep .sha512sum)"
+
+pkgname=proton-ge-bin
+pkgver="${_pkgver//-/.}" # Swap '-' for '.'
+pkgrel=1
+pkgdesc="Compatibility tool for Steam Play based on Wine and additional components"
+arch=('x86_64')
+url="https://github.com/GloriousEggroll/proton-ge-custom"
+license=('BSD' 'LGPL' 'zlib' 'MIT' 'MPL' 'custom')
+depends=('python'
+  'vulkan-icd-loader'
+  'lib32-openal'
+  'lib32-vkd3d'
+  # libav support #
+  'lib32-libva'
+  'ffmpeg4.4'
+  'lib32-speex'
+  'lib32-libtheora'
+  'lib32-libvdpau'
+  # gstreamer support #
+  'gst-plugins-bad-libs'
+  'lib32-gst-plugins-base-libs'
+  'libjpeg6-turbo'
+  'graphene'
+  'lib32-libjpeg6-turbo'
+  'lib32-libgudev'
+  'lib32-mpg123'
+  'libsoup'
+  # other #
+  'lib32-openssl-1.1'
+  'lib32-libusb')
+makedepends=('git' 'tar' 'findutils')
+checkdepends=()
+optdepends=('kdialog: KDE splash dialog support'
+  'zenity: GNOME splash dialog support'
+  'python-kivy: splash dialog support (big picture mode)'
+  'steam: use proton with steam like intended'
+  'lib32-vulkan-icd-loader: dxvk dependency for 32bit prefixes'
+  'vulkan-driver: driver to be used by dxvk'
+  'winetricks: protonfixes backend - highly recommended'
+  'wine: support for 32bit prefixes'
+  'xboxdrv: gamepad driver service')
+provides=('proton' "proton-ge=${pkgver}")
+conflicts=('proton-ge' 'proton-ge-custom')
+replaces=()
+backup=('opt/proton-ge/user_settings.py')
+options=()
+install=
+changelog=
+source=("${pkgname}-${pkgver}.tar.gz::${_src_url}" "user_settings.py")
+noextract=()
+validpgpkeys=()
+sha512sums=("$(curl -sL "$_checksum_url" |  grep .tar.gz | awk '{print $1}')" 'fd9a7d237ddadaf331d9ab1f62eb0b64da120c1e7becd91bbfc5434cc59fef7d6e7697354de417e2c1e071172820d01f60bb147a410580e4f8d3d1bb5e18d215')
+
+options=(emptydirs)
+
+build() {
+    mkdir -p "${srcdir}/build"
+    tar -xf "${srcdir}/${pkgname}-${pkgver}.tar.gz" -C "${srcdir}/build"
+}
+
+package() {
+    mkdir -p "${pkgdir}/opt/proton-ge"
+    cp -r "${srcdir}/build/${_pkgver}"/* "${pkgdir}/opt/proton-ge"
+    cp "${srcdir}/user_settings.py" "${pkgdir}/opt/proton-ge/user_settings.py"
+
+    # Set correct permissions
+    find "${pkgdir}/opt/proton-ge" -type d -exec chmod 755 {} +
+    find "${pkgdir}/opt/proton-ge" -type f -exec chmod 644 {} +
+    find "${pkgdir}/opt/proton-ge" -type f -executable -exec chmod 755 {} +
+
+    mkdir -p "${pkgdir}/usr/share/lutris/runners/wine"
+    ln -sf "/opt/proton-ge" "${pkgdir}/usr/share/lutris/runners/wine/proton-ge"
+
+    mkdir -p "${pkgdir}/usr/share/steam/compatibilitytools.d"
+    ln -sf "/opt/proton-ge" "${pkgdir}/usr/share/steam/compatibilitytools.d/proton-ge"
+}

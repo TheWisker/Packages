@@ -1,0 +1,16 @@
+pkgbase = tabmanager-extension
+	pkgdesc = WebExtensions for restoring and saving window / tab states
+	pkgver = 7.1.1
+	pkgrel = 1
+	url = https://github.com/sienori/Tab-Session-Manager
+	arch = any
+	license = MPL-2.0
+	makedepends = git
+	makedepends = npm
+	makedepends = zip
+	makedepends = unzip
+	depends = firefox
+	source = tabmanager-extension-7.1.1::git+https://github.com/sienori/Tab-Session-Manager#tag=7.1.1
+	sha512sums = b0462e3e2b4ee7a49f52224449a81239d41c8108bf0683dc294b8edfd240c5f4da641a31481a467593b67b3fe6bf559192fa80835d54a8cd35f78ac0652ce47a
+
+pkgname = tabmanager-extension

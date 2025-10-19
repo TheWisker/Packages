@@ -1,0 +1,26 @@
+pkgbase = pywalfox
+	pkgdesc = Dynamic theming of Firefox using Pywal colors
+	pkgver = v2.0.11_v2.7.4
+	pkgrel = 1
+	url = https://github.com/frewacom/pywalfox
+	arch = any
+	license = MPL-2.0
+	makedepends = git
+	makedepends = npm
+	makedepends = sed
+	makedepends = python-setuptools
+	depends = python
+	depends = firefox
+	depends = python-setuptools
+	depends = python-importlib-metadata
+	depends = python-pywalfox
+	provides = pywalfox-extension
+	provides = pywalfox-native
+	provides = python-pywalfox
+	conflicts = python-pywalfox
+	source = pywalfox-v2.0.11-ext::git+https://github.com/Frewacom/pywalfox#tag=v2.0.11
+	source = pywalfox-v2.7.4-app::git+https://github.com/Frewacom/pywalfox-native#tag=v2.7.4
+	sha512sums = 9df9b3e73b7369e1baaf42fb754f94139160fd6ef7d62b919c7d2859e2f0ef870f873839a091e10b8fa452d2594c6af7c8891e57847681bac8f8800fcf0c984f
+	sha512sums = b830fccaaa109a4f9e17d41d5b8ae012dbdfe84feb76afcf7480d08cfdda857a47bb859d19289241497caa3a4799b03ce1ca87bfd6d95eb9ab5caf9cd593f8de
+
+pkgname = pywalfox

@@ -1,0 +1,35 @@
+# Maintainer: Wisker <TheWisker@protonmail.com>
+pkgname=amy-icon-theme
+pkgver=v1.1.0 #16/7/25
+pkgrel=1
+pkgdesc="Amy dark icons for linux desktop"
+arch=('any')
+url="https://github.com/L4ki/Amy-Plasma-Themes"
+license=('GPL-3.0-or-later')
+depends=()
+makedepends=('tar' 'findutils')
+checkdepends=()
+optdepends=()
+provides=('icon-theme')
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("amy-src.tar.xz")
+noextract=()
+validpgpkeys=()
+sha512sums=('501491319512aee0b3410b0319f1b3277a5346e03753b9700cb01dfa47c9637e58312b39158da607d1e1e0ebb2d28b1cbcf28c69371dc2e31908e4e320efd3d5')
+
+prepare() {
+    tar -C "${srcdir}/" -xJf "${srcdir}/amy-src.tar.xz"
+}
+
+package() {
+    mkdir -p "${pkgdir}/usr/share/icons/"
+    cp -r "$srcdir/Amy" "${pkgdir}/usr/share/icons/"
+	# Ensure all icon files are world-readable
+	find "$pkgdir/usr/share/icons/" -type f -exec chmod 644 {} +
+    find "$pkgdir/usr/share/icons/" -type d -exec chmod 755 {} +
+}
