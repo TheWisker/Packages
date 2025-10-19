@@ -34,62 +34,62 @@
 
 The packages currently mantained are:
 
-- &lt;S&gt; *linux-stellarch*: Stellarch Linux kernel and modules.
-- &lt;S&gt; *linux-stellarch-headers*: Stellarch Linux headers and scripts.
-- &lt;B&gt; *amy-icon-theme*: Amy dark icons for linux desktop.
-- &lt;A&gt; *awesome-git*: Highly configurable framework window manager.
-- *cavasik*: Audio visualizer based on CAVA.
-- &lt;S&gt; *dotfiles*: Collection of Linux dotfiles.
-- &lt;A&gt; *dropbox*: A free service that lets you bring your photos, docs, and videos anywhere and share them easily.
-- &lt;B&gt; *enchanted-sound-theme*: Enchanted complete system sounds.
-- &lt;A&gt; *f3*: Simple tool that tests flash cards capacity and performance to see if they live up to claimed specifications.
-- *hyperfluent-grub-theme*: Fluent, modern, and clean GRUB theme.
-- &lt;A&gt; *jdownloader2*: Download manager, written in Java, for one-click hosting sites like Rapidshare and MEGA. Uses its own updater.
-- *millennium*: Millennium is an open-source low-code modding framework to create, manage and use themes/plugins for the desktop Steam Client without any low-level internal interaction or overhead.
-- &lt;U&gt; *nody-greeter*: LightDM greeter that allows to create wonderful themes with web technologies. Made in Node.js.
-- &lt;B&gt; *orchis-gtk-theme*: Flat Materia Gtk+ theme based on Elegant Design.
-- &lt;B&gt; *orchis-kvantum-theme*: Flat Materia Kvantum theme based on Elegant Design.
-- &lt;A&gt; *pdd*: Tiny date, time diff calculator.
-- &lt;A&gt; *popcorntime*: Stream movies from torrents. Skip the downloads. Launch, click, watch.
-- &lt;A&gt; *prelink*: ELF prelinking utility to speed up dynamic linking.
-- &lt;A&gt; *preload*: Makes applications run faster by prefetching binaries and shared objects.
-- &lt;L&gt; *proton-ge*: Compatibility tool for Steam Play based on Wine and additional components. Always latest version.
-- *python-i686-bin*: Major release 3.11 of the Python high-level programming language (32-bit).
-- *pywalfox*: Dynamic theming of Firefox using Pywal colors.
-- &lt;U&gt; *sea-greeter*: LightDM greeter made with WebKit2GTK.
-- *shikai-theme*: Modern lightdm webkit2 theme.
-- &lt;U&gt; *suwayomi*: A rewrite of Tachiyomi for the Desktop.
-- *tabmanager-extension*: WebExtensions for restoring and saving window / tab states.
-- &lt;A&gt; *trackma*: A lightweight and simple program for updating and using lists on several media tracking websites.
-- *ultimmc*: Free, open source launcher and instance manager for Minecraft.
-- &lt;A&gt; *ventoy*: A new bootable USB solution.
-- &lt;S&gt; *wallpapers*: Personal collection of wallpapers curated over time for their visual appeal, mood, and artistic value.
-- *web-greeter*: A modern, visually appealing greeter for LightDM.
-- &lt;A&gt; *xclicker*: A blazing fast gui autoclicker for linux.
-- &lt;B&gt; *xcursor-hacked*: Hacked Serie X11 cursor themes, is a modification of the variation Hacked of Breeze Cursors by Ken Vermette.
-- &lt;S&gt; *zhou-theme*: Dynamic and aesthetic AwesomeWM theme.
+- &lt;S&gt; **linux-stellarch**: Stellarch Linux kernel and modules.
+- &lt;S&gt; **linux-stellarch-headers**: Stellarch Linux headers and scripts.
+- &lt;B&gt; **amy-icon-theme**: Amy dark icons for linux desktop.
+- &lt;A&gt; **awesome-git**: Highly configurable framework window manager.
+- **cavasik**: Audio visualizer based on CAVA.
+- &lt;S&gt; **dotfiles**: Collection of Linux dotfiles.
+- &lt;A&gt; **dropbox**: A free service that lets you bring your photos, docs, and videos anywhere and share them easily.
+- &lt;B&gt; **enchanted-sound-theme**: Enchanted complete system sounds.
+- &lt;A&gt; **f3**: Simple tool that tests flash cards capacity and performance to see if they live up to claimed specifications.
+- **hyperfluent-grub-theme**: Fluent, modern, and clean GRUB theme.
+- &lt;A&gt; **jdownloader2**: Download manager, written in Java, for one-click hosting sites like Rapidshare and MEGA. Uses its own updater.
+- **millennium**: Millennium is an open-source low-code modding framework to create, manage and use themes/plugins for the desktop Steam Client without any low-level internal interaction or overhead.
+- &lt;U&gt; **nody-greeter**: LightDM greeter that allows to create wonderful themes with web technologies. Made in Node.js.
+- &lt;B&gt; **orchis-gtk-theme**: Flat Materia Gtk+ theme based on Elegant Design.
+- &lt;B&gt; **orchis-kvantum-theme**: Flat Materia Kvantum theme based on Elegant Design.
+- &lt;A&gt; **pdd**: Tiny date, time diff calculator.
+- &lt;A&gt; **popcorntime**: Stream movies from torrents. Skip the downloads. Launch, click, watch.
+- &lt;A&gt; **prelink**: ELF prelinking utility to speed up dynamic linking.
+- &lt;A&gt; **preload**: Makes applications run faster by prefetching binaries and shared objects.
+- &lt;L&gt; **proton-ge**: Compatibility tool for Steam Play based on Wine and additional components. Always latest version.
+- **python-i686-bin**: Major release 3.11 of the Python high-level programming language (32-bit).
+- **pywalfox**: Dynamic theming of Firefox using Pywal colors.
+- &lt;U&gt; **sea-greeter**: LightDM greeter made with WebKit2GTK.
+- **shikai-theme**: Modern lightdm webkit2 theme.
+- &lt;U&gt; **suwayomi**: A rewrite of Tachiyomi for the Desktop.
+- **tabmanager-extension**: WebExtensions for restoring and saving window / tab states.
+- &lt;A&gt; **trackma**: A lightweight and simple program for updating and using lists on several media tracking websites.
+- **ultimmc**: Free, open source launcher and instance manager for Minecraft.
+- &lt;A&gt; **ventoy**: A new bootable USB solution.
+- &lt;S&gt; **wallpapers**: Personal collection of wallpapers curated over time for their visual appeal, mood, and artistic value.
+- **web-greeter**: A modern, visually appealing greeter for LightDM.
+- &lt;A&gt; **xclicker**: A blazing fast gui autoclicker for linux.
+- &lt;B&gt; **xcursor-hacked**: Hacked Serie X11 cursor themes, is a modification of the variation Hacked of Breeze Cursors by Ken Vermette.
+- &lt;S&gt; **zhou-theme**: Dynamic and aesthetic AwesomeWM theme.
 
 Where the symbols mean:
 
-- *&lt;S&gt;*: Stellarch distro related package, thightly related to the distro.
-- *&lt;A&gt;*: [AUR][aur] mirrored package with little to no modifications.
-- *&lt;B&gt;*: Package includes its sources.
-- *&lt;U&gt;*: Currently unmantained package.
-- *&lt;L&gt;*: Always latest version package. These are packages written to automatically detect latest version and install it.
+- **&lt;S&gt;**: Stellarch distro related package, thightly related to the distro.
+- **&lt;A&gt;**: [AUR][aur] mirrored package with little to no modifications.
+- **&lt;B&gt;**: Package includes its sources.
+- **&lt;U&gt;**: Currently unmantained package.
+- **&lt;L&gt;**: Always latest version package. These are packages written to automatically detect latest version and install it.
 
 <h2 align="center">Install [<a href="https://github.com/TheWisker/Packages#index">↑</a>]</h2>
 
 This repository doesnt host any sources except for certain packages (&lt;B&gt;) with no suitable external sources.
 Thus, to install packages, internet is usually a requirement. Packages are installed using makepkg as they follow [ABS][abs].
 
-An example of building and installing a package using **[makepkg][makepkg]**:
+An example of building and installing a package using *[makepkg][makepkg]*:
 
 ```shell
 # Inside the directory containing the PKGBUILD:
 makepkg -si
 ```
 
-Where the **-s** flag attempts to install runtime and buildtime dependencies and the **-i** flag intalls the resulting built package.
+Where the *-s* flag attempts to install runtime and buildtime dependencies and the *-i* flag intalls the resulting built package.
 
 <h2 align="center">Contributions [<a href="https://github.com/TheWisker/Packages#index">↑</a>]</h2>
 
