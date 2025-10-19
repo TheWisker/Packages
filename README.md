@@ -79,7 +79,7 @@ Where the symbols mean:
 
 <h2 align="center">Install [<a href="https://github.com/TheWisker/Packages#index">↑</a>]</h2>
 
-This repository doesnt host any sources except for certain packages (<B>) with no suitable external sources.
+This repository doesnt host any sources except for certain packages (&lt;B&gt;) with no suitable external sources.
 Thus, to install packages, internet is usually a requirement. Packages are installed using makepkg as they follow [ABS][abs].
 
 An example of building and installing a package using **[makepkg][makepkg]**:
